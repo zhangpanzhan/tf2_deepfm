@@ -103,12 +103,15 @@ for i, _input in enumerate(sparse_inputs):
 ```
 
 接下来就是要进行特征组合，如果对 n 个 sparse 特征两两组合，那么复杂度应该是 $O(n^2)$ ，但是可以对特征组合的公式加以化简：
+
 $$
 \begin{aligned}  & \sum_{i=1}^n{\sum_{j=i+1}^n{<v_i,v_j>x_ix_j}} \\ & = \frac{1}{2}\sum_{i=1}^n{\sum_{j=1}^n{<v_i,v_j>x_ix_j}}-\frac{1}{2}\sum_{i=1}^n{<v_i,v_i>x_ix_i}\\  & = \frac{1}{2}\left(\sum_{i=1}^n{\sum_{j=1}^n{\sum_{f=1}^k{v_{if}v_{jf}x_ix_j}}}-\sum_{i=1}^n{\sum_{f=1}^k{v_{if}v_{if}x_ix_i}}\right) \\   & = \frac{1}{2}\left(\sum_{f=1}^k{\sum_{i=1}^n{v_{if}x_i\sum_{j=1}^n{v_{jf}x_j}}}-\sum_{i=1}^n{\sum_{f=1}^k{v_{if}v_{if}x_ix_i}}\right) \\
 &= \frac{1}{2}\sum_{f=1}^k\left(\left(\sum_{i=1}^n{v_{if}x_i}\right)^2-\sum_{i=1}^n{v_{if}^2x_i^2}\right)
 \end{aligned}
 $$
+
 这样一来，是复杂度就降低为： $O(kn)$。如果你对这部分的知识感兴趣，可以参考我之前的这篇文章：[CTR经典模型串讲：FM / FFM / 双线性 FFM 相关推导与理解](https://blog.csdn.net/VariableX/article/details/107529033)。由于只对 sparse 特征进行特征组合，因此 $x_i$ 非 0 即 1，因此实际需要计算的只有 $x_i = 1$ 的数据，于是公式又可以表示为：
+
 $$
 \begin{aligned}  & \sum_{i=1}^n{\sum_{j=i+1}^n{<v_i,v_j>x_ix_j}} \\ & = \frac{1}{2}\sum_{f=1}^k\left(\left(\sum_{i=1}^n{v_{if}}\right)^2-\sum_{i=1}^n{v_{if}^2}\right)
 \end{aligned}
@@ -195,8 +198,6 @@ model.fit(train_dense_x+train_sparse_x,
           validation_data=(val_dense_x+val_sparse_x, val_label),
          )
 ```
-
-最后，本文的代码链接在：https://github.com/zxxwin/tf2_deepfm 。
 
 数据下载地址为：链接：https://pan.baidu.com/s/1Qy3yemu1LYVtj0Wn47myHQ 提取码：pv7u
 
